@@ -1,6 +1,6 @@
 import os
 from flask_admin import Admin
-from models import db, User
+from models import db, User, Planets, People, Favorites
 from flask_admin.contrib.sqla import ModelView
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, validators
@@ -11,6 +11,10 @@ class UserForm(FlaskForm):
 class UserAdmin(ModelView):
     form = UserForm
 
+class Favorites_model(ModelView):
+    column_list = ('user_id', 'planets_id', "people_id")
+    form_columns = ('user_id', 'planets_id', "people_id")
+
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
@@ -19,7 +23,10 @@ def setup_admin(app):
        
     # Add your models here, for example this is how we add a the User model to the admin
     admin.add_view(UserAdmin(User, db.session))
-    # admin.add_view(ModelView(Starships, db.session))
+    admin.add_view(ModelView(Planets, db.session))
+    admin.add_view(ModelView(People, db.session))
+    admin.add_view(Favorites_model(Favorites, db.session))
+    
 
 
     # You can duplicate that line to add mew models
